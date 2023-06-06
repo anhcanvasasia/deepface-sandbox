@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  deepface:
+    container_name: deepface
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./tests:/app/tests
+      - ./deepface:/app/deepface
+      - ./deepface/models:/root/.deepface/weights

@@ -12,6 +12,7 @@ COPY ./api/app.py /app/
 COPY ./api/routes.py /app/
 COPY ./api/service.py /app/
 COPY ./requirements.txt /app/
+COPY ./requirements_additional.txt /app/
 COPY ./setup.py /app/
 COPY ./README.md /app/
 # -----------------------------------
@@ -19,8 +20,10 @@ COPY ./README.md /app/
 WORKDIR /app
 # -----------------------------------
 # update image os
+RUN pip install --upgrade pip
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6 -y
+RUN pip install -r requirements_additional.txt
 # -----------------------------------
 # if you will use gpu, then you should install tensorflow-gpu package
 # RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org tensorflow-gpu
