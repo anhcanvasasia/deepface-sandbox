@@ -11,3 +11,4 @@ tests/dataset/*.pkl
 tests/sandbox.ipynb
 *.pyc
 deepface/models/
+tests/dataset/deepface/
