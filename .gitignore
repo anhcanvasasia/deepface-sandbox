@@ -11,5 +11,5 @@ tests/dataset/*.pkl
 tests/sandbox.ipynb
 *.pyc
 deepface/models/
-tests/dataset/deepface
-/tests/dataset/canvas-asia-face-img/
+tests/dataset/deepface/*
+tests/dataset/canvas-asia-face-img/
