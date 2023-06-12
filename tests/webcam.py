@@ -1,24 +1,28 @@
-import cv2
-import torch
-from torchvision import transforms
-import numpy as np
+import os
 
-if __name__ == "__main__":
-    prev_frame_time = 0
-    new_frame_time = 0
-    power = pow(10, 6)
-    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    print(device)
+folder_path = "dataset/canvas-asia-face-img/Anh"  # Specify the path to the folder containing the images
+file_extension = ".jpg"  # Specify the file extension of the images
 
-    cap = cv2.VideoCapture(cv2.CAP_V4L2)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+# Get a list of all files in the folder
+file_list = os.listdir(folder_path)
 
-    while cap.isOpened():
-        isSuccess, frame = cap.read()
+# Initialize a counter variable
+counter = 1
 
-        if cv2.waitKey(1) & 0xFF == 27:
-            break
+# Loop through each file in the list
+for file_name in file_list:
+    if file_name.endswith(file_extension):
+        # Construct the new file name with the counter
+        new_file_name = folder_path.split("/")[-1] + "_" + str(counter) + file_extension
 
-    cap.release()
-    cv2.destroyAllWindows()
+        # Get the current file path and the new file path
+        current_path = os.path.join(folder_path, file_name)
+        new_path = os.path.join(folder_path, new_file_name)
+
+        # Rename the file
+        os.rename(current_path, new_path)
+
+        # Increment the counter
+        counter += 1
+
+
