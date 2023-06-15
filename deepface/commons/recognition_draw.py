@@ -22,7 +22,7 @@ def detected_img(freeze_img, overlay, opacity):
     )
 
 
-def detected_img_label(coordinate, freeze_img, label):
+def detected_img_label(coordinate, freeze_img, label, text_color):
     cv2.putText(
         freeze_img,
         label,
@@ -49,7 +49,7 @@ def set_freeze_img(row_start, row_end, col_start, col_end, freeze_img, display_i
     return freeze_img
 
 
-def top_right(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label):
+def top_right(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label, text_color):
     freeze_img = set_freeze_img(row_start=y - pivot_img_size,
                                 row_end=y,
                                 col_start=x + w,
@@ -62,7 +62,7 @@ def top_right(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opac
                     color=(46, 200, 255),
                     freeze_img=freeze_img)
     detected_img(freeze_img=freeze_img, overlay=overlay, opacity=opacity)
-    detected_img_label(coordinate=(x + w, y + 10), freeze_img=freeze_img, label=label)
+    detected_img_label(coordinate=(x + w, y + 10), freeze_img=freeze_img, label=label, text_color=text_color)
     connected_line(start=(x + int(w / 2), y),
                    end=(x + 3 * int(w / 4), y - int(pivot_img_size / 2)),
                    color=(67, 67, 67),
@@ -73,7 +73,7 @@ def top_right(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opac
                    freeze_img=freeze_img)
 
 
-def bottom_left(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label):
+def bottom_left(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label, text_color):
     freeze_img = set_freeze_img(row_start=y + h,
                                 row_end=y + h + pivot_img_size,
                                 col_start=x - pivot_img_size,
@@ -85,7 +85,7 @@ def bottom_left(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, op
                     color=(46, 200, 255),
                     freeze_img=freeze_img)
     detected_img(freeze_img=freeze_img, overlay=overlay, opacity=opacity)
-    detected_img_label(coordinate=(x - pivot_img_size, y + h - 10), freeze_img=freeze_img, label=label)
+    detected_img_label(coordinate=(x - pivot_img_size, y + h - 10), freeze_img=freeze_img, label=label, text_color=text_color)
     connected_line(start=(x + int(w / 2), y + h),
                    end=(x + int(w / 2) - int(w / 4), y + h + int(pivot_img_size / 2)),
                    color=(67, 67, 67),
@@ -96,7 +96,7 @@ def bottom_left(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, op
                    freeze_img=freeze_img)
 
 
-def top_left(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label):
+def top_left(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label, text_color):
     freeze_img = set_freeze_img(row_start=y - pivot_img_size,
                                 row_end=y,
                                 col_start=x - pivot_img_size,
@@ -108,7 +108,7 @@ def top_left(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opaci
                     color=(46, 200, 255),
                     freeze_img=freeze_img)
     detected_img(freeze_img=freeze_img, overlay=overlay, opacity=opacity)
-    detected_img_label(coordinate=(x - pivot_img_size, y + 10), freeze_img=freeze_img, label=label)
+    detected_img_label(coordinate=(x - pivot_img_size, y + 10), freeze_img=freeze_img, label=label, text_color=text_color)
     connected_line(start=(x + int(w / 2), y),
                    end=(x + int(w / 2) - int(w / 4), y - int(pivot_img_size / 2)),
                    color=(67, 67, 67),
@@ -119,7 +119,7 @@ def top_left(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opaci
                    freeze_img=freeze_img)
 
 
-def bottom_right(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label):
+def bottom_right(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label, text_color):
     freeze_img = set_freeze_img(row_start=y + h,
                                 row_end=y + h + pivot_img_size,
                                 col_start=x + w,
@@ -131,7 +131,7 @@ def bottom_right(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, o
                     color=(46, 200, 255),
                     freeze_img=freeze_img)
     detected_img(freeze_img=freeze_img, overlay=overlay, opacity=opacity)
-    detected_img_label(coordinate=(x + w, y + h - 10), freeze_img=freeze_img, label=label)
+    detected_img_label(coordinate=(x + w, y + h - 10), freeze_img=freeze_img, label=label, text_color=text_color)
     connected_line(start=(x + int(w / 2), y + h),
                    end=(x + int(w / 2) + int(w / 4), y + h + int(pivot_img_size / 2)),
                    color=(67, 67, 67),
@@ -146,18 +146,16 @@ def bottom_right(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, o
                    freeze_img=freeze_img)
 
 
-def img_and_label(x, y, w, h, freeze_img, display_img, pivot_img_size, label, resolution_x, resolution_y):
+def img_and_label(x, y, w, h, freeze_img, display_img, pivot_img_size, label, resolution_x, resolution_y, text_color, opacity):
     overlay = freeze_img.copy()
-    opacity = 0.4
-
     if y - pivot_img_size > 0 and x + w + pivot_img_size < resolution_x: # top right
-        top_right(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label)
+        top_right(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label, text_color)
     elif y + h + pivot_img_size < resolution_y and x - pivot_img_size > 0: # bottom left
-        bottom_left(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label)
+        bottom_left(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label, text_color)
     elif y - pivot_img_size > 0 and x - pivot_img_size > 0: # top left
-        top_left(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label)
+        top_left(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label, text_color)
     elif x + w + pivot_img_size < resolution_x and y + h + pivot_img_size < resolution_y: # bottom right
-        bottom_right(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label)
+        bottom_right(x, y, w, h, freeze_img, display_img, pivot_img_size, overlay, opacity, label, text_color)
 
     return freeze_img, label
 

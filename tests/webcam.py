@@ -34,6 +34,7 @@ def simplified_recognition(img, pivot_img_size):
     faces = get_detected_faces(face_objs)
     freeze_img = img.copy()
     base_img = img.copy()
+    opacity = 0.5
 
     for detected_face in faces:
         x = detected_face[0]
@@ -89,7 +90,7 @@ def simplified_recognition(img, pivot_img_size):
                     label = label.split("/")[-1]
 
                     try:
-                        freeze_img, label = recognition_draw.img_and_label(x, y, w, h, freeze_img, display_img, pivot_img_size, label, resolution_x, resolution_y)
+                        freeze_img, label = recognition_draw.img_and_label(x, y, w, h, freeze_img, display_img, pivot_img_size, label, resolution_x, resolution_y, text_color, opacity)
                     except Exception as err:  # pylint: disable=broad-except
                         print(str(err))
                 else:
@@ -126,7 +127,7 @@ if __name__ == "__main__":
     distance_metric = "cosine"
     enable_face_analysis = False
     enforce_detection = False
-    cosine_threshold = 0.4
+    cosine_threshold = 0.3
     silent = True
     source = 0
 
