@@ -7,7 +7,7 @@ import os
 import time
 import pandas as pd
 from deepface import DeepFace
-from deepface.commons import functions
+from deepface.commons import functions, recognition_draw
 
 from facenet_pytorch import MTCNN
 from retinaface import RetinaFace
@@ -21,7 +21,7 @@ def get_detected_faces(face_objs: list):
     return faces
 
 
-def simplified_recognition():
+def simplified_recognition(img, pivot_img_size):
     resolution_x = img.shape[1]
     resolution_y = img.shape[0]
 
@@ -89,239 +89,12 @@ def simplified_recognition():
                     label = label.split("/")[-1]
 
                     try:
-                        if (
-                                y - pivot_img_size > 0
-                                and x + w + pivot_img_size < resolution_x
-                        ):
-                            # top right
-                            freeze_img[
-                            y - pivot_img_size: y,
-                            x + w: x + w + pivot_img_size,
-                            ] = display_img
-
-                            overlay = freeze_img.copy()
-                            opacity = 0.4
-                            cv2.rectangle(
-                                freeze_img,
-                                (x + w, y),
-                                (x + w + pivot_img_size, y + 20),
-                                (46, 200, 255),
-                                cv2.FILLED,
-                            )
-                            cv2.addWeighted(
-                                overlay,
-                                opacity,
-                                freeze_img,
-                                1 - opacity,
-                                0,
-                                freeze_img,
-                            )
-
-                            cv2.putText(
-                                freeze_img,
-                                label,
-                                (x + w, y + 10),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.5,
-                                text_color,
-                                1,
-                            )
-
-                            # connect face and text
-                            cv2.line(
-                                freeze_img,
-                                (x + int(w / 2), y),
-                                (x + 3 * int(w / 4), y - int(pivot_img_size / 2)),
-                                (67, 67, 67),
-                                1,
-                            )
-                            cv2.line(
-                                freeze_img,
-                                (x + 3 * int(w / 4), y - int(pivot_img_size / 2)),
-                                (x + w, y - int(pivot_img_size / 2)),
-                                (67, 67, 67),
-                                1,
-                            )
-
-                        elif (
-                                y + h + pivot_img_size < resolution_y
-                                and x - pivot_img_size > 0
-                        ):
-                            # bottom left
-                            freeze_img[
-                            y + h: y + h + pivot_img_size,
-                            x - pivot_img_size: x,
-                            ] = display_img
-
-                            overlay = freeze_img.copy()
-                            opacity = 0.4
-                            cv2.rectangle(
-                                freeze_img,
-                                (x - pivot_img_size, y + h - 20),
-                                (x, y + h),
-                                (46, 200, 255),
-                                cv2.FILLED,
-                            )
-                            cv2.addWeighted(
-                                overlay,
-                                opacity,
-                                freeze_img,
-                                1 - opacity,
-                                0,
-                                freeze_img,
-                            )
-
-                            cv2.putText(
-                                freeze_img,
-                                label,
-                                (x - pivot_img_size, y + h - 10),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.5,
-                                text_color,
-                                1,
-                            )
-
-                            # connect face and text
-                            cv2.line(
-                                freeze_img,
-                                (x + int(w / 2), y + h),
-                                (
-                                    x + int(w / 2) - int(w / 4),
-                                    y + h + int(pivot_img_size / 2),
-                                ),
-                                (67, 67, 67),
-                                1,
-                            )
-                            cv2.line(
-                                freeze_img,
-                                (
-                                    x + int(w / 2) - int(w / 4),
-                                    y + h + int(pivot_img_size / 2),
-                                ),
-                                (x, y + h + int(pivot_img_size / 2)),
-                                (67, 67, 67),
-                                1,
-                            )
-
-                        elif y - pivot_img_size > 0 and x - pivot_img_size > 0:
-                            # top left
-                            freeze_img[
-                            y - pivot_img_size: y, x - pivot_img_size: x
-                            ] = display_img
-
-                            overlay = freeze_img.copy()
-                            opacity = 0.4
-                            cv2.rectangle(
-                                freeze_img,
-                                (x - pivot_img_size, y),
-                                (x, y + 20),
-                                (46, 200, 255),
-                                cv2.FILLED,
-                            )
-                            cv2.addWeighted(
-                                overlay,
-                                opacity,
-                                freeze_img,
-                                1 - opacity,
-                                0,
-                                freeze_img,
-                            )
-
-                            cv2.putText(
-                                freeze_img,
-                                label,
-                                (x - pivot_img_size, y + 10),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.5,
-                                text_color,
-                                1,
-                            )
-
-                            # connect face and text
-                            cv2.line(
-                                freeze_img,
-                                (x + int(w / 2), y),
-                                (
-                                    x + int(w / 2) - int(w / 4),
-                                    y - int(pivot_img_size / 2),
-                                ),
-                                (67, 67, 67),
-                                1,
-                            )
-                            cv2.line(
-                                freeze_img,
-                                (
-                                    x + int(w / 2) - int(w / 4),
-                                    y - int(pivot_img_size / 2),
-                                ),
-                                (x, y - int(pivot_img_size / 2)),
-                                (67, 67, 67),
-                                1,
-                            )
-
-                        elif (
-                                x + w + pivot_img_size < resolution_x
-                                and y + h + pivot_img_size < resolution_y
-                        ):
-                            # bottom righ
-                            freeze_img[
-                            y + h: y + h + pivot_img_size,
-                            x + w: x + w + pivot_img_size,
-                            ] = display_img
-
-                            overlay = freeze_img.copy()
-                            opacity = 0.4
-                            cv2.rectangle(
-                                freeze_img,
-                                (x + w, y + h - 20),
-                                (x + w + pivot_img_size, y + h),
-                                (46, 200, 255),
-                                cv2.FILLED,
-                            )
-                            cv2.addWeighted(
-                                overlay,
-                                opacity,
-                                freeze_img,
-                                1 - opacity,
-                                0,
-                                freeze_img,
-                            )
-
-                            cv2.putText(
-                                freeze_img,
-                                label,
-                                (x + w, y + h - 10),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.5,
-                                text_color,
-                                1,
-                            )
-
-                            # connect face and text
-                            cv2.line(
-                                freeze_img,
-                                (x + int(w / 2), y + h),
-                                (
-                                    x + int(w / 2) + int(w / 4),
-                                    y + h + int(pivot_img_size / 2),
-                                ),
-                                (67, 67, 67),
-                                1,
-                            )
-                            cv2.line(
-                                freeze_img,
-                                (
-                                    x + int(w / 2) + int(w / 4),
-                                    y + h + int(pivot_img_size / 2),
-                                ),
-                                (x + w, y + h + int(pivot_img_size / 2)),
-                                (67, 67, 67),
-                                1,
-                            )
+                        freeze_img, label = recognition_draw.img_and_label(x, y, w, h, freeze_img, display_img, pivot_img_size, label, resolution_x, resolution_y)
                     except Exception as err:  # pylint: disable=broad-except
                         print(str(err))
                 else:
                     print(f'Name: Unknown - Suspect {folder_name} with Score: {cosine_score}')
+
         cv2.rectangle(freeze_img, (10, 10), (90, 50), (67, 67, 67), -10)
         cv2.putText(
             freeze_img,
@@ -374,7 +147,7 @@ if __name__ == "__main__":
             break
 
         if mtncc_detect(frame=img):
-            simplified_recognition()
+            simplified_recognition(img, pivot_img_size)
         else:
             cv2.imshow("img", img)
 
