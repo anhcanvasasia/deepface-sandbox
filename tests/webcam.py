@@ -33,7 +33,6 @@ def simplified_recognition(img, pivot_img_size):
     )
     faces = get_detected_faces(face_objs)
     freeze_img = img.copy()
-    base_img = img.copy()
     opacity = 0.5
 
     for detected_face in faces:
@@ -46,7 +45,7 @@ def simplified_recognition(img, pivot_img_size):
             img, (x, y), (x + w, y + h), (67, 67, 67), 1
         )
 
-        custom_face = base_img[y: y + h, x: x + w]
+        custom_face = freeze_img[y: y + h, x: x + w]
         dfs = DeepFace.find(
             img_path=custom_face,
             db_path=db_path,
@@ -93,19 +92,9 @@ def simplified_recognition(img, pivot_img_size):
                         freeze_img, label = recognition_draw.img_and_label(x, y, w, h, freeze_img, display_img, pivot_img_size, label, resolution_x, resolution_y, text_color, opacity)
                     except Exception as err:  # pylint: disable=broad-except
                         print(str(err))
+                        label = 'Unknown'
                 else:
                     print(f'Name: Unknown - Suspect {folder_name} with Score: {cosine_score}')
-
-        cv2.rectangle(freeze_img, (10, 10), (90, 50), (67, 67, 67), -10)
-        cv2.putText(
-            freeze_img,
-            label,
-            (40, 40),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            1,
-            (255, 255, 255),
-            1,
-        )
 
         cv2.imshow("img", freeze_img)
 
@@ -127,10 +116,10 @@ if __name__ == "__main__":
     distance_metric = "cosine"
     enable_face_analysis = False
     enforce_detection = False
-    cosine_threshold = 0.3
     silent = True
     source = 0
 
+    cosine_threshold = 0.3
     text_color = (255, 255, 255)
     pivot_img_size = 112
     target_size = functions.find_target_size(model_name=model_name)
@@ -138,12 +127,9 @@ if __name__ == "__main__":
     DeepFace.build_model(model_name=model_name)
     print(f"facial recognition model {model_name} is just built")
 
-    tic = time.time()
-
     cap = cv2.VideoCapture(source)
     while True:
         _, img = cap.read()
-
         if img is None:
             break
 
@@ -155,6 +141,5 @@ if __name__ == "__main__":
         if cv2.waitKey(1) & 0xFF == ord("q"):  # press q to quit
             break
 
-    # kill open cv things
     cap.release()
     cv2.destroyAllWindows()
